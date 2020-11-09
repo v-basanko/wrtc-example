@@ -9,19 +9,19 @@ const WebRtcConnectionManager = require('./lib/server/connections/webrtcconnecti
 const app = express();
 
 app.use(bodyParser.json());
-app.use('/record-audio-video-stream/index.js', browserify(`${__dirname}/examples/record-audio-video-stream/client.js`));
-app.get('/record-audio-video-stream/index.html', (req, res) => {
+app.use('/rtc/record-audio-video-stream/index.js', browserify(`${__dirname}/examples/record-audio-video-stream/client.js`));
+app.get('/rtc/record-audio-video-stream/index.html', (req, res) => {
   res.sendFile(`${__dirname}/html/index.html`);
 });
 
 const connectionManager = WebRtcConnectionManager.create();
 
-app.get(`/record-audio-video-stream/connections`, (req, res) => {
+app.get(`/rtc/record-audio-video-stream/connections`, (req, res) => {
   console.log('GET Connections')
   res.send(connectionManager.getConnections());
 });
 
-app.post(`/record-audio-video-stream/connections`, async (req, res) => {
+app.post(`/rtc/record-audio-video-stream/connections`, async (req, res) => {
   try {
     const connection = await connectionManager.createConnection();
     console.log('POST Connections', JSON.stringify(connection));
@@ -32,7 +32,7 @@ app.post(`/record-audio-video-stream/connections`, async (req, res) => {
   }
 });
 
-app.delete(`/record-audio-video-stream/connections/:id`, (req, res) => {
+app.delete(`/rtc/record-audio-video-stream/connections/:id`, (req, res) => {
   const { id } = req.params;
   console.log('DELETE Connections')
   const connection = connectionManager.getConnection(id);
@@ -44,7 +44,7 @@ app.delete(`/record-audio-video-stream/connections/:id`, (req, res) => {
   res.send(connection);
 });
 
-app.get(`/record-audio-video-stream/connections/:id`, (req, res) => {
+app.get(`/rtc/record-audio-video-stream/connections/:id`, (req, res) => {
   const { id } = req.params;
   console.log('GET Connection')
   const connection = connectionManager.getConnection(id);
@@ -55,7 +55,7 @@ app.get(`/record-audio-video-stream/connections/:id`, (req, res) => {
   res.send(connection);
 });
 
-app.get(`/record-audio-video-stream/connections/:id/local-description`, (req, res) => {
+app.get(`/rtc/record-audio-video-stream/connections/:id/local-description`, (req, res) => {
   const { id } = req.params;
   console.log('GET Connection local-description')
   const connection = connectionManager.getConnection(id);
@@ -66,7 +66,7 @@ app.get(`/record-audio-video-stream/connections/:id/local-description`, (req, re
   res.send(connection.toJSON().localDescription);
 });
 
-app.get(`/record-audio-video-stream/connections/:id/remote-description`, (req, res) => {
+app.get(`/rtc/record-audio-video-stream/connections/:id/remote-description`, (req, res) => {
   const { id } = req.params;
   console.log('GET Connection remote-description')
   const connection = connectionManager.getConnection(id);
@@ -77,7 +77,7 @@ app.get(`/record-audio-video-stream/connections/:id/remote-description`, (req, r
   res.send(connection.toJSON().remoteDescription);
 });
 
-app.post(`/record-audio-video-stream/connections/:id/remote-description`, async (req, res) => {
+app.post(`/rtc/record-audio-video-stream/connections/:id/remote-description`, async (req, res) => {
   const { id } = req.params;
   console.log('POST Connection remote-description')
   const connection = connectionManager.getConnection(id);
@@ -93,7 +93,7 @@ app.post(`/record-audio-video-stream/connections/:id/remote-description`, async 
     res.sendStatus(400);
   }
 });
-app.get('/', (req, res) => res.redirect('record-audio-video-stream/index.html'));
+app.get('/rtc', (req, res) => res.redirect('rtc/record-audio-video-stream/index.html'));
 
 const server = app.listen(3000, () => {
   server.once('close', () => {
