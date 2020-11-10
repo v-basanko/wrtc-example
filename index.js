@@ -3,13 +3,14 @@
 const bodyParser = require('body-parser');
 const browserify = require('browserify-middleware');
 const express = require('express');
+const https = require('https');
 const fs = require('fs');
 const WebRtcConnectionManager = require('./lib/server/connections/webrtcconnectionmanager');
 const privateKey = fs.readFileSync('/opt/key.pem');
 const certificate = fs.readFileSync('/opt/cert.pem');
 const credentials = { key: privateKey, cert: certificate};
-const app = express.createServer(credentials);
-
+const app = express();
+const httpsServer = https.createServer(credentials, app);
 app.use(bodyParser.json());
 app.use('/rtc/record-audio-video-stream/index.js', browserify(`${__dirname}/examples/record-audio-video-stream/client.js`));
 app.get('/rtc/record-audio-video-stream/index.html', (req, res) => {
@@ -97,7 +98,7 @@ app.post(`/rtc/record-audio-video-stream/connections/:id/remote-description`, as
 });
 app.get('/rtc', (req, res) => res.redirect('rtc/record-audio-video-stream/index.html'));
 
-const server = app.listen(3000, () => {
+const server = httpsServer.listen(3000, () => {
   server.once('close', () => {
     connectionManager.close();
   });
