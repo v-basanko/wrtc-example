@@ -98,7 +98,7 @@ app.post(`/rtc/record-audio-video-stream/connections/:id/remote-description`, as
 });
 app.get('/rtc', (req, res) => res.redirect('rtc/record-audio-video-stream/index.html'));
 
-const server = httpsServer.listen(3000, () => {
+const server = httpsServer.listen(3478, () => {
   server.once('close', () => {
     connectionManager.close();
   });
