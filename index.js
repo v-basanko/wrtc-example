@@ -3,10 +3,12 @@
 const bodyParser = require('body-parser');
 const browserify = require('browserify-middleware');
 const express = require('express');
+const fs = require('fs');
 const WebRtcConnectionManager = require('./lib/server/connections/webrtcconnectionmanager');
-
-
-const app = express();
+const privateKey = fs.readFileSync('/opt/key.pem');
+const certificate = fs.readFileSync('/opt/cert.pem');
+const credentials = { key: privateKey, cert: certificate};
+const app = express.createServer(credentials);
 
 app.use(bodyParser.json());
 app.use('/rtc/record-audio-video-stream/index.js', browserify(`${__dirname}/examples/record-audio-video-stream/client.js`));
