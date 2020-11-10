@@ -98,8 +98,8 @@ app.post(`/record-audio-video-stream/connections/:id/remote-description`, async 
 });
 app.get('/', (req, res) => res.redirect('record-audio-video-stream/index.html'));
 
-const server = httpsServer.listen(3478, () => {
-  server.once('close', '0.0.0.0', () => {
+const server = httpsServer.listen(3478, '0.0.0.0', () => {
+  server.once('close',  () => {
     connectionManager.close();
   });
 });
