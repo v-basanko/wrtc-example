@@ -12,19 +12,19 @@ const credentials = { key: privateKey, cert: certificate};
 const app = express();
 const httpsServer = https.createServer(credentials, app);
 app.use(bodyParser.json());
-app.use('/rtc/record-audio-video-stream/index.js', browserify(`${__dirname}/examples/record-audio-video-stream/client.js`));
-app.get('/rtc/record-audio-video-stream/index.html', (req, res) => {
+app.use('/record-audio-video-stream/index.js', browserify(`${__dirname}/examples/record-audio-video-stream/client.js`));
+app.get('/record-audio-video-stream/index.html', (req, res) => {
   res.sendFile(`${__dirname}/html/index.html`);
 });
 
 const connectionManager = WebRtcConnectionManager.create();
 
-app.get(`/rtc/record-audio-video-stream/connections`, (req, res) => {
+app.get(`/record-audio-video-stream/connections`, (req, res) => {
   console.log('GET Connections')
   res.send(connectionManager.getConnections());
 });
 
-app.post(`/rtc/record-audio-video-stream/connections`, async (req, res) => {
+app.post(`/record-audio-video-stream/connections`, async (req, res) => {
   try {
     const connection = await connectionManager.createConnection();
     console.log('POST Connections', JSON.stringify(connection));
@@ -35,7 +35,7 @@ app.post(`/rtc/record-audio-video-stream/connections`, async (req, res) => {
   }
 });
 
-app.delete(`/rtc/record-audio-video-stream/connections/:id`, (req, res) => {
+app.delete(`/record-audio-video-stream/connections/:id`, (req, res) => {
   const { id } = req.params;
   console.log('DELETE Connections')
   const connection = connectionManager.getConnection(id);
@@ -47,7 +47,7 @@ app.delete(`/rtc/record-audio-video-stream/connections/:id`, (req, res) => {
   res.send(connection);
 });
 
-app.get(`/rtc/record-audio-video-stream/connections/:id`, (req, res) => {
+app.get(`/record-audio-video-stream/connections/:id`, (req, res) => {
   const { id } = req.params;
   console.log('GET Connection')
   const connection = connectionManager.getConnection(id);
@@ -58,7 +58,7 @@ app.get(`/rtc/record-audio-video-stream/connections/:id`, (req, res) => {
   res.send(connection);
 });
 
-app.get(`/rtc/record-audio-video-stream/connections/:id/local-description`, (req, res) => {
+app.get(`/record-audio-video-stream/connections/:id/local-description`, (req, res) => {
   const { id } = req.params;
   console.log('GET Connection local-description')
   const connection = connectionManager.getConnection(id);
@@ -69,7 +69,7 @@ app.get(`/rtc/record-audio-video-stream/connections/:id/local-description`, (req
   res.send(connection.toJSON().localDescription);
 });
 
-app.get(`/rtc/record-audio-video-stream/connections/:id/remote-description`, (req, res) => {
+app.get(`/record-audio-video-stream/connections/:id/remote-description`, (req, res) => {
   const { id } = req.params;
   console.log('GET Connection remote-description')
   const connection = connectionManager.getConnection(id);
@@ -80,7 +80,7 @@ app.get(`/rtc/record-audio-video-stream/connections/:id/remote-description`, (re
   res.send(connection.toJSON().remoteDescription);
 });
 
-app.post(`/rtc/record-audio-video-stream/connections/:id/remote-description`, async (req, res) => {
+app.post(`/record-audio-video-stream/connections/:id/remote-description`, async (req, res) => {
   const { id } = req.params;
   console.log('POST Connection remote-description')
   const connection = connectionManager.getConnection(id);
@@ -96,9 +96,9 @@ app.post(`/rtc/record-audio-video-stream/connections/:id/remote-description`, as
     res.sendStatus(400);
   }
 });
-app.get('/rtc', (req, res) => res.redirect('rtc/record-audio-video-stream/index.html'));
+app.get('/', (req, res) => res.redirect('record-audio-video-stream/index.html'));
 
-const server = httpsServer.listen(3478, () => {
+const server = httpsServer.listen(443, () => {
   server.once('close', () => {
     connectionManager.close();
   });
